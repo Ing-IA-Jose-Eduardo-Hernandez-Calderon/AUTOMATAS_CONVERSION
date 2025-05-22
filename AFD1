@@ -1,0 +1,67 @@
+package com.mycompany.automatafd1;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
+
+public class AFD1 {
+    private String estadoInicial = "q0";
+    private String estadoActual;
+    private String estadoAceptacionQ01 = "q0,q1,q2";
+    private Map<String, Map<String, String>> transiciones;
+
+    public AFD1() {
+        estadoActual = estadoInicial;
+        transiciones = new HashMap<>();
+
+        Map<String, String> tranQ0 = new HashMap<>();
+        // Definir transiciones para q0
+        tranQ0.put("0", "q0,q1");
+        tranQ0.put("1", "q0");
+        transiciones.put("q0", tranQ0);
+
+        // Definir transiciones para q1
+        Map<String, String> tranQ1 = new HashMap<>();
+        tranQ1.put("0", "q0,q1,q2");
+        tranQ1.put("1", "q0");
+        transiciones.put("q0,q1", tranQ1);
+
+        // Definir transiciones para q2
+        Map<String, String> tranQ2 = new HashMap<>();
+        tranQ2.put("0", "q0,q1,q2");
+        tranQ2.put("1", "q0");
+        transiciones.put("q0,q1,q2", tranQ2);
+    }
+
+    public boolean procesarAutomata(String cadena) {
+        estadoActual = estadoInicial;
+        for (int i = 0; i < cadena.length(); i++) {
+            String simbolo = String.valueOf(cadena.charAt(i));
+            Map<String, String> mapaTransiciones = transiciones.get(estadoActual);
+
+            if (mapaTransiciones != null && mapaTransiciones.containsKey(simbolo)) {
+                estadoActual = mapaTransiciones.get(simbolo);
+            } else {
+                System.out.println("Símbolo no válido: " + simbolo);
+                return false;
+            }
+        }
+        return estadoActual.equals(estadoAceptacionQ01);
+    }
+
+    public static void main(String[] args) {
+        AFD1 AFD1 = new AFD1();
+
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Introduce una cadena:");
+        String cadena = scanner.nextLine();
+
+        if (AFD1.procesarAutomata(cadena)) {
+            System.out.println("Cadena aceptada");
+        } else {
+            System.out.println("Cadena rechazada");
+        }
+
+        scanner.close();
+    }
+}
